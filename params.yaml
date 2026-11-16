@@ -1,0 +1,19 @@
+preprocess:
+  input: data/raw/data.csv            # bahan mentah (dari Kaggle)
+  output: data/processed/data.csv     # hasil setelah dibersihkan
+
+train:
+  data: data/processed/data.csv       # train memakai hasil preprocess (= preprocess.output)
+  model: models/model.pkl             # model yang sudah dilatih disimpan di sini
+  test_data: data/processed/test.csv  # data uji disisihkan di sini untuk evaluate
+  random_state: 42                    # "seed": supaya hasil acak bisa diulang persis sama
+  test_size: 0.2                      # 20% data untuk uji, 80% untuk latih
+  param_grid:                         # kombinasi yang dicoba GridSearchCV
+    n_estimators: [100, 200]          # jumlah pohon di Random Forest
+    max_depth: [5, 10, null]          # kedalaman pohon; null = tanpa batas
+    min_samples_split: [2, 5]         # minimal data agar satu cabang boleh dipecah
+    min_samples_leaf: [1, 2]          # minimal data di setiap ujung cabang
+
+evaluate:
+  data: data/processed/test.csv       # evaluasi HANYA pada data uji (= train.test_data)
+  model: models/model.pkl             # model yang dievaluasi (= train.model)
