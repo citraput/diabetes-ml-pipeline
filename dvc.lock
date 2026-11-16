@@ -1,0 +1,85 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+    - path: data/raw/data.csv
+      hash: md5
+      md5: 60acca81995dc9744b499005ecfe6f2a
+      size: 23290
+    - path: src/preprocess.py
+      hash: md5
+      md5: 3342a05865a04171e8d6bc13f87156b8
+      size: 1223
+    params:
+      params.yaml:
+        preprocess:
+          input: data/raw/data.csv
+          output: data/processed/data.csv
+    outs:
+    - path: data/processed/data.csv
+      hash: md5
+      md5: b9109b70005e98903b73afa3b00e8b16
+      size: 27478
+  train:
+    cmd: python src/train.py
+    deps:
+    - path: data/processed/data.csv
+      hash: md5
+      md5: b9109b70005e98903b73afa3b00e8b16
+      size: 27478
+    - path: src/train.py
+      hash: md5
+      md5: 5a27bb4fc84d6fc7baa7fdb1cee0c1f9
+      size: 3368
+    params:
+      params.yaml:
+        train:
+          data: data/processed/data.csv
+          model: models/model.pkl
+          test_data: data/processed/test.csv
+          random_state: 42
+          test_size: 0.2
+          param_grid:
+            n_estimators:
+            - 100
+            - 200
+            max_depth:
+            - 5
+            - 10
+            - 
+            min_samples_split:
+            - 2
+            - 5
+            min_samples_leaf:
+            - 1
+            - 2
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: f78f0a55782f1c15ecccb2958e195c67
+      size: 5514
+    - path: models/model.pkl
+      hash: md5
+      md5: 8eb4b73aa5c6705ce8f59415ddfb63d3
+      size: 1227572
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: f78f0a55782f1c15ecccb2958e195c67
+      size: 5514
+    - path: models/model.pkl
+      hash: md5
+      md5: 8eb4b73aa5c6705ce8f59415ddfb63d3
+      size: 1227572
+    - path: src/evaluate.py
+      hash: md5
+      md5: 0107da840ac40b67a99d506fedb897c9
+      size: 1071
+    params:
+      params.yaml:
+        evaluate:
+          data: data/processed/test.csv
+          model: models/model.pkl
