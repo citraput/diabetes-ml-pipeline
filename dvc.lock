@@ -30,8 +30,8 @@ stages:
       size: 27478
     - path: src/train.py
       hash: md5
-      md5: 5a27bb4fc84d6fc7baa7fdb1cee0c1f9
-      size: 3368
+      md5: 912f0758a476d6fd6df4e6fbd7c6897e
+      size: 5651
     params:
       params.yaml:
         train:
@@ -40,40 +40,68 @@ stages:
           test_data: data/processed/test.csv
           random_state: 42
           test_size: 0.2
-          param_grid:
-            n_estimators:
-            - 100
-            - 200
-            max_depth:
-            - 5
-            - 10
-            - 
-            min_samples_split:
-            - 2
-            - 5
-            min_samples_leaf:
-            - 1
-            - 2
+          cv: 5
+          scoring: f1
+          models:
+            logistic_regression:
+              C:
+              - 0.01
+              - 0.1
+              - 1
+              - 10
+              class_weight:
+              - 
+              - balanced
+            random_forest:
+              n_estimators:
+              - 100
+              - 200
+              max_depth:
+              - 5
+              - 10
+              - 
+              min_samples_split:
+              - 2
+              - 5
+              min_samples_leaf:
+              - 1
+              - 2
+              class_weight:
+              - 
+              - balanced
+            gradient_boosting:
+              learning_rate:
+              - 0.05
+              - 0.1
+              max_depth:
+              - 3
+              - 
+              max_iter:
+              - 100
+              - 200
+              class_weight:
+              - 
+              - balanced
     outs:
     - path: data/processed/test.csv
       hash: md5
-      md5: f78f0a55782f1c15ecccb2958e195c67
-      size: 5514
+      md5: 4f97a9585927fdf3d10a108bb7b4ef59
+      size: 6130
     - path: models/model.pkl
       hash: md5
-      md5: 8eb4b73aa5c6705ce8f59415ddfb63d3
-      size: 1227572
+      md5: 8402fcb73423d6af4f4e840d0c848116
+      size: 770275
   evaluate:
     cmd: python src/evaluate.py
     deps:
     - path: data/processed/test.csv
       hash: md5
-      md5: f78f0a55782f1c15ecccb2958e195c67
-      size: 5514
+      md5: 4f97a9585927fdf3d10a108bb7b4ef59
+      size: 6130
     - path: models/model.pkl
       hash: md5
-      md5: 8eb4b73aa5c6705ce8f59415ddfb63d3
-      size: 1227572
+      md5: 8402fcb73423d6af4f4e840d0c848116
+      size: 770275
     - path: src/evaluate.py
       hash: md5
       md5: 0107da840ac40b67a99d506fedb897c9
